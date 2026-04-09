@@ -1,24 +1,12 @@
-name: Deploy to GitHub Pages
+name: Build and Deploy
 
 on:
   push:
     branches: [master]
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
-
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -33,11 +21,14 @@ jobs:
         env:
           VITE_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
 
-      - uses: actions/configure-pages@v5
-
-      - uses: actions/upload-pages-artifact@v3
+      - name: Deploy via SFTP
+        uses: pressidium/lftp-mirror-action@v1
         with:
-          path: dist
-
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          host: ${{ secrets.SFTP_HOST }}
+          user: ${{ secrets.SFTP_USERNAME }}
+          pass: ${{ secrets.SFTP_PASSWORD }}
+          remoteDir: /home/dh_23jj96/wrightbagwell.com/calendar/
+          localDir: ./dist/
+          reverse: true
+          onlyNewer: true
+          options: --verbose
