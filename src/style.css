@@ -126,12 +126,12 @@ html, body {
 .auth-credit {
   display: block;
   font-size: 0.75rem;
-  color: var(--text-faint);
-  text-decoration: none;
+  color: #6e9fff;
+  text-decoration: underline;
   margin-top: 12px;
 }
 .auth-credit:active {
-  color: var(--text-dim);
+  color: #9bbcff;
 }
 
 /* ── Calendar screen ─────────────────────────────────── */

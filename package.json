@@ -1,6 +1,6 @@
 {
   "name": "nudge",
-  "version": "2.4.4",
+  "version": "2.4.5",
   "description": "A minimal PWA that turns your phone into an always-on desk calendar. Connects to Google Calendar and shows today's events with live countdowns, color-coded by urgency.",
   "scripts": {
     "dev": "vite",
