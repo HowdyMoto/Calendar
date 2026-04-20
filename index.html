@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-  <title>Nudge</title>
+  <title>Nudge Caltendar</title>
 
   <!-- PWA / iOS fullscreen -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -43,6 +43,7 @@
       </div>
       <div class="auth-footer">
         <div class="auth-version" id="auth-version"></div>
+        <a class="auth-credit" href="privacy.html" target="_blank">Privacy policy</a>
         <a class="auth-credit" href="https://wrightbagwell.com" target="_blank">by Wright Bagwell</a>
       </div>
     </div>
@@ -61,6 +62,7 @@
       <div id="settings-panel" class="hidden">
         <div class="settings-header">
           <span class="settings-heading">Settings</span>
+          <button class="settings-close" onclick="toggleSettings()" aria-label="Close">✕</button>
         </div>
         <div class="settings-divider"></div>
         <div class="setting-row">

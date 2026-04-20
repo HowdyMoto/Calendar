@@ -21,18 +21,39 @@
 </head>
 <body>
   <h1>Nudge — Privacy Policy</h1>
-  <p>Last updated: April 1, 2026</p>
+  <p>Last updated: April 11, 2026</p>
 
-  <h2>What Nudge accesses</h2>
-  <p>Nudge requests read-only access to your Google Calendar, Google Tasks, and Google Contacts. This is used solely to display your meetings, tasks, and attendee photos on your device.</p>
+  <p>Nudge is a browser-based calendar display that connects to your Google account to show today's meetings and tasks on your own device. This policy explains exactly what Google user data Nudge accesses, how it is used, and what happens to it. Nudge's use of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, including the Limited Use requirements.</p>
 
-  <h2>What we store</h2>
-  <p>Nothing leaves your device. Nudge runs entirely in your browser. There is no server, no database, and no analytics. Your Google authentication token is stored in your browser's local storage so you don't have to sign in every time.</p>
+  <h2>Google user data Nudge accesses</h2>
+  <p>When you sign in with Google, Nudge requests the following read-only OAuth scopes:</p>
+  <ul>
+    <li><strong>Google Calendar</strong> (<code>calendar.readonly</code>) — event titles, start and end times, locations, descriptions, calendar colors, attendee names and email addresses, and your response status for each event on the current day.</li>
+    <li><strong>Google Tasks</strong> (<code>tasks.readonly</code>) — task lists and task items (title, due date, completion status).</li>
+    <li><strong>Google Contacts and Directory</strong> (<code>contacts.readonly</code>, <code>contacts.other.readonly</code>, <code>directory.readonly</code>) — profile photos and display names for event attendees, looked up by the email addresses that appear on your calendar events.</li>
+  </ul>
+  <p>Nudge does not request write access to any Google service and cannot create, modify, or delete events, tasks, or contacts.</p>
 
-  <h2>What we share</h2>
-  <p>Nothing. Your data is never sent to any third party, collected, or tracked.</p>
+  <h2>How Nudge uses that data</h2>
+  <p>The data above is used for one purpose only: to render today's calendar and tasks on the screen of the device you are currently using. Specifically:</p>
+  <ul>
+    <li>Calendar events are displayed as cards on a time grid with live countdowns and color coding.</li>
+    <li>Tasks are displayed as an optional list alongside events.</li>
+    <li>Attendee profile photos from Contacts/Directory are shown as avatars on the event cards to make upcoming meetings recognizable at a glance.</li>
+  </ul>
+  <p>Google user data is <strong>never</strong> used for advertising, never sold, never used to train machine-learning or AI models, and never used for any purpose other than the in-browser display described above.</p>
+
+  <h2>How Nudge stores and transmits data</h2>
+  <p>Nudge is a static web app that runs entirely in your browser. There is no Nudge server, no database, no logging, and no analytics. Calendar, task, and contact data is fetched directly from Google's APIs to your browser, held in memory while the page is open, and discarded when you close the tab or sign out. None of this data is transmitted to the developer or to any third party.</p>
+  <p>The only item Nudge persists locally is your Google OAuth access token, which is stored in your browser's <code>localStorage</code> so that you do not have to sign in again every time you open the app. This token stays on your device.</p>
+
+  <h2>Sharing</h2>
+  <p>Nudge does not share, sell, transfer, or disclose your Google user data to any third party. Data flows only between Google and your browser.</p>
+
+  <h2>Revoking access and deleting data</h2>
+  <p>You can sign out from the Settings panel, which clears the locally stored token. You can revoke Nudge's access to your Google account at any time at <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>. Because Nudge stores no data off-device, revoking access and clearing your browser storage fully removes any information Nudge held.</p>
 
   <h2>Contact</h2>
-  <p>If you have questions, open an issue at <a href="https://github.com/HowdyMoto/NudgeCalendar">github.com/HowdyMoto/NudgeCalendar</a>.</p>
+  <p>If you have questions about this policy or Nudge's data handling, open an issue at <a href="https://github.com/HowdyMoto/NudgeCalendar">github.com/HowdyMoto/NudgeCalendar</a>.</p>
 </body>
 </html>
