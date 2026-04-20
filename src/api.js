@@ -11,14 +11,49 @@ import { DEMO_MODE } from './config.js';
 
 // ── Fetch profile photos via People API ──────────────────
 
+let selfPromise = null;
+
+function findSelfEmail() {
+  for (const ev of events) {
+    if (ev.organizer?.self && ev.organizer?.email) return ev.organizer.email.toLowerCase();
+    const selfAttendee = ev.attendees?.find(a => a.self);
+    if (selfAttendee?.email) return selfAttendee.email.toLowerCase();
+  }
+  return null;
+}
+
+async function fetchSelfPhoto() {
+  if (selfPromise) return selfPromise;
+  const selfEmail = findSelfEmail();
+  if (!selfEmail) return;
+  selfPromise = (async () => {
+    try {
+      const resp = await gapi.client.people.people.get({
+        resourceName: 'people/me',
+        personFields: 'photos',
+      });
+      const photo = resp.result.photos?.find(p => !p.default)?.url;
+      if (photo) photoCache[selfEmail] = photo;
+    } catch (e) {
+      console.warn('[photos] self lookup failed:', e);
+    }
+  })();
+  return selfPromise;
+}
+
 export async function fetchPhotos(emails) {
   if (!gapi.client.people) return;
+  await fetchSelfPhoto();
   const uncached = emails.filter(e => e && !(e in photoCache));
-  if (uncached.length === 0) return;
+  if (uncached.length === 0) {
+    setLastStructureKey('');
+    renderEvents();
+    return;
+  }
 
   uncached.forEach(e => { photoCache[e] = ''; });
 
-  await fetchPhotosFromContacts(uncached);
+  await fetchPhotosFromConnections(uncached);
 
   let missing = uncached.filter(e => !photoCache[e]);
   if (missing.length) await fetchPhotosFromOtherContacts(missing);
@@ -28,28 +63,36 @@ export async function fetchPhotos(emails) {
   if (found.length) console.log('[photos] found:', found);
   if (notFound.length) console.log('[photos] not found:', notFound);
 
-  if (found.length) {
-    setLastStructureKey('');
-    renderEvents();
-  }
+  setLastStructureKey('');
+  renderEvents();
 }
 
-async function fetchPhotosFromContacts(emails) {
-  const fetches = emails.map(async email => {
-    try {
-      const resp = await gapi.client.people.people.searchContacts({
-        query: email,
-        readMask: 'photos',
-        pageSize: 1,
+async function fetchPhotosFromConnections(emails) {
+  try {
+    let pageToken = '';
+    const emailSet = new Set(emails.map(e => e.toLowerCase()));
+    do {
+      const resp = await gapi.client.people.people.connections.list({
+        resourceName: 'people/me',
+        personFields: 'emailAddresses,photos',
+        pageSize: 1000,
+        pageToken: pageToken || undefined,
       });
-      const person = resp.result.results?.[0]?.person;
-      const photo = person?.photos?.find(p => !p.default)?.url;
-      if (photo) photoCache[email] = photo;
-    } catch (e) {
-      console.warn(`[photos] contacts lookup failed for ${email}:`, e);
-    }
-  });
-  await Promise.all(fetches);
+      const connections = resp.result.connections || [];
+      for (const c of connections) {
+        const cEmails = (c.emailAddresses || []).map(e => e.value.toLowerCase());
+        const match = cEmails.find(e => emailSet.has(e));
+        if (match) {
+          const photo = c.photos?.find(p => !p.default)?.url;
+          if (photo) photoCache[match] = photo;
+          emailSet.delete(match);
+        }
+      }
+      pageToken = resp.result.nextPageToken || '';
+    } while (pageToken && emailSet.size > 0);
+  } catch (e) {
+    console.warn('[photos] connections lookup failed:', e);
+  }
 }
 
 async function fetchPhotosFromOtherContacts(emails) {

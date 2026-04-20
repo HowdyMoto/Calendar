@@ -328,8 +328,9 @@ export function renderEvents() {
       <div id="ev-${idx}" class="event-card ${state}${animClass}${compactClass}${overlapClass}" style="${allStyles}"${dismissAttr} data-expandable>
         <div class="card-summary">
           ${avatarName ? `<div class="organizer-avatar">
-            ${photoCache[avatarPerson.email] ? `<img class="avatar-img" src="${photoCache[avatarPerson.email]}" alt="">` : ''}
-            <span class="avatar-initials">${escapeHtml(avatarInitials)}</span>
+            ${photoCache[avatarPerson.email]
+              ? `<img class="avatar-img" src="${photoCache[avatarPerson.email]}" referrerpolicy="no-referrer" alt="" onerror="this.remove()">`
+              : `<span class="avatar-initials">${escapeHtml(avatarInitials)}</span>`}
           </div>` : ''}
           <div class="card-main">
             <div class="event-title"${titleColor}>${escapeHtml(event.summary || '(No title)')}</div>
