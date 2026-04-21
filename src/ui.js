@@ -10,10 +10,19 @@ import { loadDemoEvents } from './demo.js';
 export const authScreen = document.getElementById('auth-screen');
 export const calendarScreen = document.getElementById('calendar-screen');
 export const loadingScreen = document.getElementById('loading-screen');
+const reauthBanner = document.getElementById('reauth-banner');
 
 export function showScreen(screen) {
   [authScreen, calendarScreen, loadingScreen].forEach(s => s.classList.add('hidden'));
   screen.classList.remove('hidden');
+}
+
+export function showReauthBanner() {
+  reauthBanner?.classList.remove('hidden');
+}
+
+export function hideReauthBanner() {
+  reauthBanner?.classList.add('hidden');
 }
 
 // Occasionally make "Nudge" dance on the auth screen

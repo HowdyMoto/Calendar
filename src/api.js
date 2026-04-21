@@ -5,7 +5,7 @@ import {
   setEvents, setCalendarMeta, setLastStructureKey,
 } from './state.js';
 import { renderEvents } from './render.js';
-import { showScreen, authScreen } from './ui.js';
+import { showScreen, authScreen, showReauthBanner, hideReauthBanner } from './ui.js';
 import { silentReauth } from './auth.js';
 import { DEMO_MODE } from './config.js';
 
@@ -199,19 +199,18 @@ export async function fetchEvents(isRetry) {
 
     setLastStructureKey('');
     renderEvents();
+    hideReauthBanner();
 
     const emails = events.map(e => pickAvatarPerson(e).email).filter(Boolean);
     if (emails.length) fetchPhotos([...new Set(emails)]);
   } catch (err) {
     console.error('Failed to fetch events:', err);
     if (err.status === 401) {
-      // Token expired — try silent reauth
       const ok = await silentReauth();
       if (ok) return fetchEvents(true);
-      // Silent reauth failed — don't boot to login, just clear token
-      // and let the next user interaction or visibility change retry
-      console.warn('Token expired, silent reauth failed — will retry on next refresh');
-      localStorage.removeItem('gapi_token');
+      // Silent reauth failed (common on iOS PWA). Keep the stored token and
+      // whatever events we last rendered; prompt the user to re-auth with one tap.
+      showReauthBanner();
     }
   }
 }
