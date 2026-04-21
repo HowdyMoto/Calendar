@@ -194,11 +194,12 @@ html, body {
   top: 50%;
   left: 50%;
   z-index: 40;
-  max-width: calc(100% - 2em);
+  width: calc(100vw - 24px);
+  max-width: 460px;
   display: inline-flex;
   align-items: center;
-  gap: 20px;
-  padding: 22px 30px;
+  gap: 18px;
+  padding: 20px 24px;
   background: #ffffff;
   color: #1f1f1f;
   border: none;
@@ -467,19 +468,66 @@ html, body {
 }
 
 .event-card.expanded {
-  height: auto !important;
   z-index: 10;
+  overflow: visible;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
 }
 
-.event-card.expanded .card-details {
-  max-height: 200px;
+/* Default expanded state: details render inline inside the card.
+   JS adds .inline-details only when content actually fits the card's
+   duration slot. If it doesn't fit, JS omits that class and the details
+   are shown as a centered floating panel instead (modal-details). */
+.event-card.expanded.inline-details .card-details {
+  max-height: 280px;
   opacity: 1;
   margin-top: 0.4em;
   color: var(--card-text, #ffffff);
 }
-.event-card.expanded .card-details .detail-row {
-  color: var(--card-sub, rgba(255,255,255,0.75));
+.event-card.expanded.inline-details .card-details .detail-row {
+  color: var(--card-sub, rgba(255, 255, 255, 0.75));
+}
+
+/* When details don't fit inline, show them as a tooltip-style popover anchored
+   below the card with an arrow pointing up at it. Uses the card's own color so
+   it reads as a related element, elevated by border + shadow. */
+.event-card.expanded:not(.inline-details) .card-details {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translateX(-50%);
+  width: min(360px, calc(100vw - 32px));
+  max-height: none;
+  margin-top: 14px;
+  padding: 0.9em 1.1em;
+  background: var(--card-color, rgba(30, 30, 40, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+  color: var(--card-text, #ffffff);
+  opacity: 1;
+  overflow: visible;
+  z-index: 30;
+}
+.event-card.expanded:not(.inline-details) .card-details-scroll {
+  max-height: min(65vh, 380px);
+  overflow-y: auto;
+}
+.event-card.expanded:not(.inline-details) .card-details::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 12px;
+  height: 12px;
+  background: var(--card-color, rgba(30, 30, 40, 0.96));
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  border-left: 1px solid rgba(255, 255, 255, 0.25);
+}
+.event-card.expanded:not(.inline-details) .card-details .detail-row {
+  color: var(--card-sub, rgba(255, 255, 255, 0.82));
 }
 
 .event-card.expanded .event-title {
@@ -513,6 +561,9 @@ html, body {
 .event-card.compact-card .card-details,
 .event-card.compact-card .event-location {
   display: none;
+}
+.event-card.compact-card.expanded .card-details {
+  display: block;
 }
 .event-card.compact-card .card-summary {
   gap: 0.3em;
@@ -604,7 +655,6 @@ html, body {
 .event-card.wrapping-up-urgent .event-time {
   color: var(--upcoming) !important;
   font-weight: 700;
-  animation: countdown-throb 1.8s ease-in-out infinite;
 }
 @keyframes wrap-urgent-pulse {
   0%, 100% { box-shadow: 0 0 8px rgba(245, 166, 35, 0); }
@@ -833,6 +883,17 @@ html, body {
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
+}
+
+.loader-status {
+  margin-top: 18px;
+  font-size: 0.88em;
+  font-weight: 500;
+  color: var(--text-dim);
+  text-align: center;
+  letter-spacing: 0.01em;
+  max-width: 80%;
+  transition: opacity 0.2s ease;
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }

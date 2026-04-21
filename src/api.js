@@ -5,7 +5,7 @@ import {
   setEvents, setCalendarMeta, setLastStructureKey,
 } from './state.js';
 import { renderEvents } from './render.js';
-import { showScreen, authScreen, showReauthBanner, hideReauthBanner } from './ui.js';
+import { showScreen, authScreen, showReauthBanner, hideReauthBanner, setLoaderStatus } from './ui.js';
 import { silentReauth } from './auth.js';
 import { DEMO_MODE } from './config.js';
 
@@ -206,6 +206,7 @@ export async function fetchEvents(isRetry) {
   } catch (err) {
     console.error('Failed to fetch events:', err);
     if (err.status === 401) {
+      setLoaderStatus('Refreshing your sign-in…');
       const ok = await silentReauth();
       if (ok) return fetchEvents(true);
       // Silent reauth failed (common on iOS PWA). Keep the stored token and

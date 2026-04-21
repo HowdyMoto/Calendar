@@ -25,6 +25,11 @@ export function hideReauthBanner() {
   reauthBanner?.classList.add('hidden');
 }
 
+export function setLoaderStatus(text) {
+  const el = document.getElementById('loader-status');
+  if (el) el.textContent = text;
+}
+
 // Occasionally make "Nudge" dance on the auth screen
 const nudgeWord = document.getElementById('nudge-word');
 setInterval(() => {

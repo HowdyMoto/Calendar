@@ -270,16 +270,16 @@ export function renderEvents() {
         const o = blendWithBg(r, g, b, bgA);
         titleColor = ` style="color: ${txt.title}"`;
         timeColor = ` style="color: ${txt.sub}"`;
-        cardStyle = `background: rgb(${o.r},${o.g},${o.b});--card-text:${txt.title};--card-sub:${txt.sub};`;
+        cardStyle = `background: rgb(${o.r},${o.g},${o.b});--card-text:${txt.title};--card-sub:${txt.sub};--card-color:rgb(${o.r},${o.g},${o.b});`;
       } else if (state === 'current') {
         const txt = urgencyTextColor(0.55, r, g, b);
         const o = blendWithBg(r, g, b, 0.55);
         titleColor = ` style="color: ${txt.title}"`;
         timeColor = ` style="color: ${txt.sub}"`;
-        cardStyle = `background: rgb(${o.r},${o.g},${o.b});--card-text:${txt.title};--card-sub:${txt.sub};`;
+        cardStyle = `background: rgb(${o.r},${o.g},${o.b});--card-text:${txt.title};--card-sub:${txt.sub};--card-color:rgb(${o.r},${o.g},${o.b});`;
       } else {
         const o = blendWithBg(r, g, b, 0.2);
-        cardStyle = `background: rgb(${o.r},${o.g},${o.b});`;
+        cardStyle = `background: rgb(${o.r},${o.g},${o.b});--card-color:rgb(${o.r},${o.g},${o.b});`;
       }
     }
 
@@ -298,9 +298,6 @@ export function renderEvents() {
 
     const details = [];
     details.push(`<div class="detail-row"><span class="detail-icon">🕐</span> ${fullTimeStr}</div>`);
-    if (countdown && state === 'current') {
-      details.push(`<div class="detail-row"><span class="detail-icon">⏳</span> ${escapeHtml(countdown)}</div>`);
-    }
     if (event.location) {
       details.push(`<div class="detail-row"><span class="detail-icon">📍</span> ${escapeHtml(event.location)}</div>`);
     }
@@ -334,10 +331,10 @@ export function renderEvents() {
           </div>` : ''}
           <div class="card-main">
             <div class="event-title"${titleColor}>${escapeHtml(event.summary || '(No title)')}</div>
-            <div class="event-time"${timeColor}>${startTimeStr}${countdown ? ` · ${countdown}` : ''}</div>
+            <div class="event-time"${timeColor}>${startTimeStr}</div>
           </div>
         </div>
-        <div class="card-details">${details.join('')}</div>
+        <div class="card-details"><div class="card-details-scroll">${details.join('')}</div></div>
       </div>
     `;
   }).join('');
@@ -366,7 +363,25 @@ export function renderEvents() {
     column.querySelectorAll('[data-expandable]').forEach(el => {
       el.addEventListener('click', (e) => {
         e.stopPropagation();
-        el.classList.toggle('expanded');
+        // Ignore taps inside the detail content itself so users can read
+        // the centered modal without it collapsing on them.
+        if (e.target.closest('.card-details')) return;
+        if (el.classList.contains('expanded')) {
+          el.classList.remove('expanded', 'inline-details');
+          return;
+        }
+        column.querySelectorAll('.event-card.expanded').forEach(other => {
+          other.classList.remove('expanded', 'inline-details');
+        });
+        const details = el.querySelector('.card-details');
+        const summary = el.querySelector('.card-summary');
+        if (details && summary) {
+          const available = el.clientHeight - summary.offsetHeight - 16;
+          if (details.scrollHeight <= available) {
+            el.classList.add('inline-details');
+          }
+        }
+        el.classList.add('expanded');
       });
     });
   } else {
