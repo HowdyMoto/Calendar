@@ -959,14 +959,14 @@ html, body {
 
 .settings-link {
   display: block;
-  font-size: 0.68rem;
-  color: var(--text-faint);
+  font-size: 0.75rem;
+  color: #6e9fff;
   text-align: center;
-  margin-top: 4px;
-  text-decoration: none;
+  margin-top: 12px;
+  text-decoration: underline;
 }
 .settings-link:active {
-  color: var(--text-dim);
+  color: #9bbcff;
 }
 
 .logout-btn {
