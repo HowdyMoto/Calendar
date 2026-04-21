@@ -6,7 +6,7 @@ import { showScreen, authScreen, loadingScreen, calendarScreen } from './ui.js';
 import { fetchEvents, fetchTasks } from './api.js';
 import { fetchCalendarColors } from './colors.js';
 import { renderEvents } from './render.js';
-import { checkMorningBriefing } from './briefing.js';
+import { checkMorningBriefing, checkEveningBriefing } from './briefing.js';
 import { startTimers } from './timers.js';
 import { toggleSettings } from './settings.js';
 
@@ -88,5 +88,6 @@ async function onAuthed() {
     renderEvents();
     startTimers();
     checkMorningBriefing();
+    checkEveningBriefing();
   });
 }

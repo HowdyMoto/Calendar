@@ -5,9 +5,9 @@ import { DEMO_MODE } from './config.js';
 import { setLastStructureKey, setLastGutterKey } from './state.js';
 import { showScreen, calendarScreen, requestWakeLock } from './ui.js';
 import { gapiLoaded, gisLoaded, handleAuth, handleLogout } from './auth.js';
+import { showEveningBriefing, checkMorningBriefing } from './briefing.js';
 import { renderEvents } from './render.js';
 import { startTimers } from './timers.js';
-import { checkMorningBriefing } from './briefing.js';
 import { loadDemoEvents, loadDemoTasks } from './demo.js';
 import { toggleSettings, setShowTasks, setScale } from './settings.js';
 
@@ -49,3 +49,14 @@ window.handleLogout = handleLogout;
 window.toggleSettings = toggleSettings;
 window.setShowTasks = setShowTasks;
 window.setScale = setScale;
+
+// Debug/preview hooks — call from DevTools to force-show either briefing
+// regardless of current time or ack state.
+window.previewMorningBriefing = () => {
+  localStorage.removeItem('briefing_ack_date');
+  checkMorningBriefing();
+};
+window.previewEveningBriefing = () => {
+  localStorage.removeItem('evening_briefing_ack_date');
+  return showEveningBriefing();
+};

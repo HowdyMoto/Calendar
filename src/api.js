@@ -215,6 +215,51 @@ export async function fetchEvents(isRetry) {
   }
 }
 
+// ── Fetch Tomorrow's Events (one-shot, doesn't mutate state) ─────
+
+export async function fetchTomorrowEvents() {
+  const now = new Date();
+  const startOfTomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  const endOfTomorrow = new Date(startOfTomorrow);
+  endOfTomorrow.setDate(endOfTomorrow.getDate() + 1);
+
+  try {
+    const calList = await gapi.client.calendar.calendarList.list();
+    const calendars = (calList.result.items || []).filter(c => c.selected !== false);
+
+    const fetches = calendars.map(c =>
+      gapi.client.calendar.events.list({
+        calendarId: c.id,
+        timeMin: startOfTomorrow.toISOString(),
+        timeMax: endOfTomorrow.toISOString(),
+        singleEvents: true,
+        orderBy: 'startTime',
+        maxResults: 50,
+      }).then(resp => (resp.result.items || []).map(ev => ({ ...ev, _calendarId: c.id })))
+       .catch(() => [])
+    );
+
+    const results = await Promise.all(fetches);
+    const seen = new Set();
+    return results.flat()
+      .filter(e => {
+        if (e.status === 'cancelled') return false;
+        const uid = e.iCalUID;
+        if (uid && seen.has(uid)) return false;
+        if (uid) seen.add(uid);
+        return true;
+      })
+      .sort((a, b) => {
+        const aTime = a.start.dateTime || a.start.date || '';
+        const bTime = b.start.dateTime || b.start.date || '';
+        return aTime.localeCompare(bTime);
+      });
+  } catch (err) {
+    console.warn('Failed to fetch tomorrow events:', err);
+    return [];
+  }
+}
+
 // ── Fetch Tasks ─────────────────────────────────────────
 
 export async function fetchTasks() {

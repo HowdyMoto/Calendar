@@ -7,6 +7,7 @@ import {
 } from './state.js';
 import { renderEvents } from './render.js';
 import { fetchEvents, fetchTasks } from './api.js';
+import { checkEveningBriefing } from './briefing.js';
 import { loadDemoEvents } from './demo.js';
 
 export function startTimers() {
@@ -15,7 +16,7 @@ export function startTimers() {
 
   if (refreshTimer) clearInterval(refreshTimer);
   setRefreshTimer(setInterval(
-    DEMO_MODE ? loadDemoEvents : () => { fetchEvents(); fetchTasks(); },
+    DEMO_MODE ? loadDemoEvents : () => { fetchEvents(); fetchTasks(); checkEveningBriefing(); },
     60 * 1000
   ));
 

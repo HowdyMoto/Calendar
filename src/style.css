@@ -813,6 +813,13 @@ html, body {
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+  opacity: 1;
+  transition: opacity 0.18s ease-out;
+}
+.settings-scrim.hidden {
+  display: block !important;
+  opacity: 0;
+  pointer-events: none;
 }
 
 #settings-panel {
@@ -827,6 +834,19 @@ html, body {
   padding-top: 48px;
   min-width: 260px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  transform-origin: top right;
+  transform: scale(1);
+  opacity: 1;
+  transition: transform 0.22s cubic-bezier(0.18, 1.1, 0.4, 1.1),
+              opacity 0.16s ease-out;
+}
+#settings-panel.hidden {
+  display: block !important;
+  transform: scale(0.15);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.16s cubic-bezier(0.5, 0, 0.95, 0.6),
+              opacity 0.14s ease-in;
 }
 @media (min-width: 768px) {
   #settings-panel {
@@ -1044,9 +1064,57 @@ html, body {
 .briefing-scrim {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  overflow: hidden;
+  background: #000;
+  transition: background 0.6s ease;
+}
+.briefing-scrim::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: transparent;
+  animation: horizon-breathe 22s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+@keyframes horizon-breathe {
+  0%, 100% { opacity: 0.85; transform: translate3d(0, 2px, 0); }
+  50%      { opacity: 1;    transform: translate3d(0, -2px, 0); }
+}
+
+/* Morning briefing — Apple Weather saturated sky */
+.briefing-overlay.mode-morning.tod-dawn   .briefing-scrim { background: linear-gradient(180deg, #1b2a4e 0%, #3a2f67 22%, #6a3770 42%, #b25470 62%, #e07a5f 82%, #f4b183 100%); }
+.briefing-overlay.mode-morning.tod-midday .briefing-scrim { background: linear-gradient(180deg, #1e5f8f 0%, #2f8cba 35%, #5fb0d0 70%, #9ccee0 100%); }
+.briefing-overlay.mode-morning.tod-golden .briefing-scrim { background: linear-gradient(180deg, #3b1f3c 0%, #6e2e4b 25%, #b04a4a 50%, #df7b3a 75%, #e8a14a 100%); }
+.briefing-overlay.mode-morning.tod-dusk   .briefing-scrim { background: linear-gradient(180deg, #12123d 0%, #2c1f5e 25%, #552680 50%, #8a3a9a 75%, #b04a80 100%); }
+.briefing-overlay.mode-morning.tod-night  .briefing-scrim { background: linear-gradient(180deg, #070c1a 0%, #0d1830 45%, #15274a 100%); }
+
+.briefing-overlay.mode-morning.tod-dawn   .briefing-scrim::before { background: radial-gradient(ellipse 80% 50% at 55% 100%, rgba(255,195,130,0.5) 0%, transparent 60%); }
+.briefing-overlay.mode-morning.tod-midday .briefing-scrim::before { background: radial-gradient(ellipse 70% 40% at 75% 10%, rgba(255,255,255,0.22) 0%, transparent 55%); }
+.briefing-overlay.mode-morning.tod-golden .briefing-scrim::before { background: radial-gradient(ellipse 80% 55% at 60% 95%, rgba(255,220,140,0.45) 0%, transparent 60%); }
+.briefing-overlay.mode-morning.tod-dusk   .briefing-scrim::before { background: radial-gradient(ellipse 90% 50% at 40% 100%, rgba(220,120,180,0.4) 0%, transparent 65%); }
+.briefing-overlay.mode-morning.tod-night  .briefing-scrim::before { background: radial-gradient(ellipse 60% 30% at 50% 78%, rgba(80,120,180,0.22) 0%, transparent 60%); }
+
+/* Evening briefing — dark top, sunset / horizon at the bottom */
+.briefing-overlay.mode-evening.tod-dawn   .briefing-scrim::before {
+  background: linear-gradient(180deg, transparent 0%, transparent 45%, #2d1b3a 68%, #8e4c6a 86%, #d87a5f 100%);
+}
+.briefing-overlay.mode-evening.tod-midday .briefing-scrim::before {
+  background: linear-gradient(180deg, transparent 0%, transparent 50%, #1a3450 78%, #3a6890 100%);
+}
+.briefing-overlay.mode-evening.tod-golden .briefing-scrim::before {
+  background: linear-gradient(180deg, transparent 0%, transparent 45%, #3c1d2e 68%, #8a3e38 85%, #d97a44 100%);
+}
+.briefing-overlay.mode-evening.tod-dusk   .briefing-scrim::before {
+  background: linear-gradient(180deg, transparent 0%, transparent 50%, #2a1850 75%, #5a2780 90%, #8a3a8a 100%);
+}
+.briefing-overlay.mode-evening.tod-night  .briefing-scrim::before {
+  background: linear-gradient(180deg, transparent 0%, transparent 55%, #080f22 82%, #0f1f3a 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .briefing-scrim::before { animation: none; }
 }
 
 .briefing-content {
@@ -1060,12 +1128,56 @@ html, body {
   overflow-y: auto;
 }
 
-.briefing-header {
-  font-size: 1.4em;
+.briefing-masthead {
+  width: 100%;
+  max-width: 460px;
+  margin-bottom: 28px;
+  text-align: left;
+  animation: masthead-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes masthead-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.briefing-kicker {
+  font-size: 0.8em;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 0.4em;
+}
+.briefing-kicker:empty {
+  display: none;
+}
+
+.briefing-date {
+  font-family: 'Google Sans', sans-serif;
   font-weight: 700;
+  font-size: clamp(2.2em, 7vw, 3.4em);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
   color: var(--text);
-  margin-bottom: 24px;
-  letter-spacing: -0.02em;
+  margin-bottom: 0.35em;
+}
+.briefing-date:empty {
+  display: none;
+}
+.briefing-date .dt-weekday,
+.briefing-date .dt-day {
+  display: block;
+}
+
+.briefing-subtitle {
+  font-size: clamp(0.95em, 2.4vw, 1.1em);
+  font-weight: 500;
+  color: rgba(255,255,255,0.75);
+  letter-spacing: 0;
+}
+.briefing-subtitle:empty {
+  display: none;
 }
 
 .briefing-cards {
@@ -1073,7 +1185,7 @@ html, body {
   flex-direction: column;
   gap: 8px;
   width: 100%;
-  max-width: 400px;
+  max-width: 460px;
 }
 
 .briefing-card {
