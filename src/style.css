@@ -190,25 +190,71 @@ html, body {
 
 /* ── Reauth banner ───────────────────────────────────── */
 .reauth-banner {
-  display: block;
-  width: calc(100% - 1.6em);
-  margin: 0.4em 0.8em;
-  padding: 0.7em 1em;
-  background: rgba(251, 188, 5, 0.18);
-  border: 1px solid rgba(251, 188, 5, 0.45);
-  color: #ffd966;
-  font-size: 0.9em;
-  font-weight: 600;
-  text-align: center;
-  border-radius: 0.6em;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 40;
+  max-width: calc(100% - 2em);
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  padding: 22px 30px;
+  background: #ffffff;
+  color: #1f1f1f;
+  border: none;
+  border-radius: 18px;
+  font-family: 'Roboto', 'Google Sans Text', Arial, sans-serif;
+  text-align: left;
   cursor: pointer;
-  transition: background 0.15s ease;
+  box-shadow: 0 12px 44px rgba(0, 0, 0, 0.45);
+  transform: translate(-50%, -50%);
+  transform-origin: center;
+  animation: reauth-wiggle 3.2s ease-in-out infinite;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.reauth-banner .google-logo {
+  flex-shrink: 0;
+}
+.reauth-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.reauth-head {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f1f1f;
+  letter-spacing: 0.1px;
+}
+.reauth-sub {
+  font-size: 13px;
+  font-weight: 400;
+  color: #5f6368;
+  letter-spacing: 0.1px;
+}
+@keyframes reauth-wiggle {
+  0%,   55%, 100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+  8%             { transform: translate(calc(-50% - 10px), -50%) rotate(-3deg) scale(1.02); }
+  16%            { transform: translate(calc(-50% + 10px), -50%) rotate(3deg)  scale(1.02); }
+  24%            { transform: translate(calc(-50% - 8px),  -50%) rotate(-2deg) scale(1.01); }
+  32%            { transform: translate(calc(-50% + 6px),  -50%) rotate(1.4deg) scale(1); }
+  40%            { transform: translate(calc(-50% - 3px),  -50%) rotate(-0.6deg) scale(1); }
+  48%            { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+}
+.reauth-banner:hover {
+  background: #f5f5f5;
+  box-shadow: 0 12px 44px rgba(0, 0, 0, 0.5);
 }
 .reauth-banner:active {
-  background: rgba(251, 188, 5, 0.3);
+  transform: translate(-50%, -50%) scale(0.97);
+  background: #ebebeb;
+  animation-play-state: paused;
 }
 .reauth-banner.hidden {
   display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reauth-banner { animation: none; }
 }
 
 #empty-state {
