@@ -1,7 +1,6 @@
 // ── Shared mutable state ────────────────────────────────
 // Centralized so modules can read/write without circular imports.
 
-export let tokenClient;
 export let events = [];
 export let updateTimer;
 export let refreshTimer;
@@ -23,7 +22,6 @@ export const previousStates = new Set();
 export const ONE_SHOT_ANIM_CLASSES = ['throb-small', 'throb-medium', 'throb-large', 'meeting-done'];
 
 // Setters for primitives (can't reassign exports from outside)
-export function setTokenClient(tc) { tokenClient = tc; }
 export function setEvents(e) { events = e; }
 export function setUpdateTimer(t) { updateTimer = t; }
 export function setRefreshTimer(t) { refreshTimer = t; }

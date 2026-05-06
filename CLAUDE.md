@@ -11,7 +11,19 @@ A minimal PWA that turns your phone into an always-on desk calendar. Connects to
 
 ## Architecture
 
-Vanilla JS (no framework), Vite build, ES modules. All source is in `src/`:
+Two pieces:
+
+1. **PWA** — vanilla JS client at `wrightbagwell.com/calendar`, source in `src/`
+2. **Auth Worker** — Cloudflare Worker BFF for Google OAuth, source in `worker/src/worker.js`. Holds the Google `client_secret` and `refresh_token` so the PWA only ever holds a short-lived access token. See `worker/README.md` for setup.
+
+Auth flow:
+- User taps "Sign in with Google" → PWA redirects to Worker `/auth/start`
+- Worker redirects to Google consent → user approves → Google calls Worker `/auth/callback`
+- Worker exchanges code for tokens, stores `refresh_token` in Cloudflare KV, generates opaque `session_id`, redirects PWA back with `#session_id=...`
+- PWA stores `session_id` in `localStorage`
+- Whenever the PWA needs a Google access token, it calls Worker `/auth/token` with the `session_id` as a Bearer header. The Worker returns a fresh access token (refreshing transparently against Google when needed)
+
+Vanilla JS (no framework), Vite build, ES modules. All PWA source is in `src/`:
 
 - `app.js` — Entry point, bootstrap, window globals for inline handlers
 - `config.js` — Constants, env vars, DEMO_MODE flag

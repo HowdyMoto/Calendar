@@ -4,7 +4,7 @@
 import { DEMO_MODE } from './config.js';
 import { setLastStructureKey, setLastGutterKey } from './state.js';
 import { showScreen, calendarScreen, requestWakeLock } from './ui.js';
-import { gapiLoaded, gisLoaded, handleAuth, handleLogout } from './auth.js';
+import { gapiLoaded, handleAuth, handleLogout } from './auth.js';
 import { showEveningBriefing, checkMorningBriefing } from './briefing.js';
 import { renderEvents } from './render.js';
 import { startTimers } from './timers.js';
@@ -33,11 +33,6 @@ if (DEMO_MODE) {
     gapiScript.src = 'https://apis.google.com/js/api.js';
     gapiScript.onload = gapiLoaded;
     document.head.appendChild(gapiScript);
-
-    const gisScript = document.createElement('script');
-    gisScript.src = 'https://accounts.google.com/gsi/client';
-    gisScript.onload = gisLoaded;
-    document.head.appendChild(gisScript);
   })();
 }
 

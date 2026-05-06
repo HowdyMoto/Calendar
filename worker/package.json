@@ -1,0 +1,13 @@
+{
+  "name": "nudge-auth-worker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OAuth BFF for Nudge Calendar PWA",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}

@@ -1,0 +1,19 @@
+name = "nudge-auth"
+main = "src/worker.js"
+compatibility_date = "2025-01-01"
+
+# Public, non-secret config. Edit these to match your deployment.
+[vars]
+PWA_ORIGIN = "https://wrightbagwell.com"
+GOOGLE_SCOPES = "https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/contacts.readonly https://www.googleapis.com/auth/contacts.other.readonly https://www.googleapis.com/auth/tasks.readonly https://www.googleapis.com/auth/userinfo.profile"
+
+# KV namespace for session storage. The id below is a placeholder — replace
+# with the value printed by:
+#   wrangler kv namespace create SESSIONS
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "0369b813dfd946a699b439dd90da6ccd"
+
+# Secrets are set via the CLI, not committed:
+#   wrangler secret put GOOGLE_CLIENT_ID
+#   wrangler secret put GOOGLE_CLIENT_SECRET

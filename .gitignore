@@ -5,3 +5,7 @@ node_modules/
 public/icon-192.png
 public/icon-512.png
 public/favicon.ico
+
+# Cloudflare Worker
+worker/.wrangler/
+worker/.dev.vars
