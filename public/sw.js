@@ -1,4 +1,4 @@
-const CACHE = 'nudge-v2';
+const CACHE = 'nudge-v3';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();

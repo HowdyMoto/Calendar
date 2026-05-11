@@ -145,7 +145,12 @@ window.addEventListener('resize', () => {
 
 // ── Service Worker ──────────────────────────────────────
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    // Force an update check on every page load so PWAs pick up new builds
+    // within seconds of deploy instead of the default ~24h cadence.
+    reg.update().catch(() => {});
+    setInterval(() => reg.update().catch(() => {}), 60 * 60 * 1000);
+  }).catch(() => {});
   navigator.serviceWorker.addEventListener('message', (e) => {
     if (e.data?.type === 'SW_UPDATED') {
       showUpdateOverlay();
