@@ -37,6 +37,9 @@ export function gapiLoaded() {
     if (localStorage.getItem(SESSION_KEY)) {
       const ok = await ensureAccessToken();
       if (ok) onAuthed();
+      else showScreen(authScreen);
+    } else {
+      showScreen(authScreen);
     }
   });
 }

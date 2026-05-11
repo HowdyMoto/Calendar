@@ -26,7 +26,7 @@
 <body>
   <div id="app">
     <!-- Auth screen -->
-    <div id="auth-screen" class="screen">
+    <div id="auth-screen" class="screen hidden">
       <div class="auth-content">
         <h1><span id="nudge-word">Nudge</span> Calendar</h1>
         <p class="auth-tagline">A playful, glanceable calendar for your phone.</p>
@@ -140,6 +140,14 @@
     </div>
   </div>
 
+  <script>
+    // Pick the initial visible screen synchronously before app.js loads, so
+    // signed-in users never see the auth screen flash on reload.
+    (function () {
+      var id = localStorage.getItem('nudge_session_id') ? 'loading-screen' : 'auth-screen';
+      document.getElementById(id).classList.remove('hidden');
+    })();
+  </script>
   <script type="module" src="/src/app.js"></script>
 </body>
 </html>
