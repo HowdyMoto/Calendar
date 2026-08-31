@@ -284,7 +284,11 @@ export function renderEvents() {
     }
 
     const progressStyle = state === 'current' ? `--progress: ${(progress * 100).toFixed(1)}%;` : '';
-    const bounceDelay = animClass ? `animation-delay: ${(bounceCount++ * 0.4).toFixed(1)}s;` : '';
+    // A rotation of the same angle sweeps a tall card's edges much farther
+    // than a short card's, so damp the jump-animation rotation as height
+    // grows to keep the apparent jump size constant.
+    const jumpRot = Math.min(1, 90 / heightPx).toFixed(2);
+    const bounceDelay = animClass ? `animation-delay: ${(bounceCount++ * 0.4).toFixed(1)}s;--jump-rot:${jumpRot};` : '';
     const allStyles = posStyle + cardStyle + progressStyle + bounceDelay;
     const dismissAttr = animClass === ' antsy' ? ` data-dismiss="${escapeHtml(key)}"` : '';
     const compactClass = isCompact ? ' compact-card' : '';

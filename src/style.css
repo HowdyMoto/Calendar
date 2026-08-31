@@ -255,18 +255,35 @@ html, body {
   display: none;
 }
 @media (prefers-reduced-motion: reduce) {
-  .reauth-banner { animation: none; }
+  .reauth-banner, .empty-emoji { animation: none; }
 }
 
 #empty-state {
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 10px;
+  text-align: center;
+  padding: 0 32px;
 }
-#empty-state p {
-  font-size: 1.3em;
+.empty-emoji {
+  font-size: 3.4em;
+  animation: empty-float 4s ease-in-out infinite;
+}
+.empty-headline {
+  font-size: 1.4em;
+  font-weight: 600;
+  color: var(--text);
+}
+.empty-sub {
+  font-size: 1.05em;
   color: var(--text-faint);
+}
+@keyframes empty-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
 }
 
 /* ── All-day events ──────────────────────────────────── */
@@ -765,42 +782,45 @@ html, body {
 
 /* ── Ollie keyframes ────────────────────────────────── */
 
+/* Rotation is scaled by --jump-rot (set per-card in render.js) so tall
+   cards, whose edges sweep much farther per degree, don't appear to jump
+   wildly. translateY values are fixed px and need no scaling. */
 @keyframes ollie-small {
   0%   { transform: translateY(0)     rotate(0deg); }
-  8%   { transform: translateY(2px)   rotate(-0.6deg); }
-  15%  { transform: translateY(4px)   rotate(-1.2deg); }
-  25%  { transform: translateY(-6px)  rotate(-0.4deg); }
-  38%  { transform: translateY(-16px) rotate(0.4deg); }
-  48%  { transform: translateY(-14px) rotate(0.8deg); }
-  58%  { transform: translateY(-8px)  rotate(0.5deg); }
-  72%  { transform: translateY(1px)   rotate(-0.1deg); }
+  8%   { transform: translateY(2px)   rotate(calc(-0.6deg * var(--jump-rot, 1))); }
+  15%  { transform: translateY(4px)   rotate(calc(-1.2deg * var(--jump-rot, 1))); }
+  25%  { transform: translateY(-6px)  rotate(calc(-0.4deg * var(--jump-rot, 1))); }
+  38%  { transform: translateY(-16px) rotate(calc(0.4deg * var(--jump-rot, 1))); }
+  48%  { transform: translateY(-14px) rotate(calc(0.8deg * var(--jump-rot, 1))); }
+  58%  { transform: translateY(-8px)  rotate(calc(0.5deg * var(--jump-rot, 1))); }
+  72%  { transform: translateY(1px)   rotate(calc(-0.1deg * var(--jump-rot, 1))); }
   85%  { transform: translateY(-0.5px) rotate(0deg); }
   100% { transform: translateY(0)     rotate(0deg); }
 }
 
 @keyframes ollie-medium {
   0%   { transform: translateY(0)     rotate(0deg); }
-  8%   { transform: translateY(3px)   rotate(-1deg); }
-  15%  { transform: translateY(6px)   rotate(-2deg); }
-  25%  { transform: translateY(-10px) rotate(-0.6deg); }
-  38%  { transform: translateY(-28px) rotate(0.6deg); }
-  48%  { transform: translateY(-25px) rotate(1.2deg); }
-  58%  { transform: translateY(-14px) rotate(0.8deg); }
-  72%  { transform: translateY(2px)   rotate(-0.2deg); }
+  8%   { transform: translateY(3px)   rotate(calc(-1deg * var(--jump-rot, 1))); }
+  15%  { transform: translateY(6px)   rotate(calc(-2deg * var(--jump-rot, 1))); }
+  25%  { transform: translateY(-10px) rotate(calc(-0.6deg * var(--jump-rot, 1))); }
+  38%  { transform: translateY(-28px) rotate(calc(0.6deg * var(--jump-rot, 1))); }
+  48%  { transform: translateY(-25px) rotate(calc(1.2deg * var(--jump-rot, 1))); }
+  58%  { transform: translateY(-14px) rotate(calc(0.8deg * var(--jump-rot, 1))); }
+  72%  { transform: translateY(2px)   rotate(calc(-0.2deg * var(--jump-rot, 1))); }
   85%  { transform: translateY(-1px)  rotate(0deg); }
   100% { transform: translateY(0)     rotate(0deg); }
 }
 
 @keyframes ollie-large {
   0%   { transform: translateY(0)     rotate(0deg); }
-  8%   { transform: translateY(4px)   rotate(-1.4deg); }
-  15%  { transform: translateY(8px)   rotate(-2.8deg); }
-  24%  { transform: translateY(-12px) rotate(-1deg); }
-  36%  { transform: translateY(-40px) rotate(0.8deg); }
-  46%  { transform: translateY(-36px) rotate(1.8deg); }
-  56%  { transform: translateY(-20px) rotate(1.2deg); }
-  68%  { transform: translateY(3px)   rotate(-0.3deg); }
-  80%  { transform: translateY(-2px)  rotate(0.1deg); }
+  8%   { transform: translateY(4px)   rotate(calc(-1.4deg * var(--jump-rot, 1))); }
+  15%  { transform: translateY(8px)   rotate(calc(-2.8deg * var(--jump-rot, 1))); }
+  24%  { transform: translateY(-12px) rotate(calc(-1deg * var(--jump-rot, 1))); }
+  36%  { transform: translateY(-40px) rotate(calc(0.8deg * var(--jump-rot, 1))); }
+  46%  { transform: translateY(-36px) rotate(calc(1.8deg * var(--jump-rot, 1))); }
+  56%  { transform: translateY(-20px) rotate(calc(1.2deg * var(--jump-rot, 1))); }
+  68%  { transform: translateY(3px)   rotate(calc(-0.3deg * var(--jump-rot, 1))); }
+  80%  { transform: translateY(-2px)  rotate(calc(0.1deg * var(--jump-rot, 1))); }
   90%  { transform: translateY(0.5px) rotate(0deg); }
   100% { transform: translateY(0)     rotate(0deg); }
 }
@@ -812,14 +832,14 @@ html, body {
 
 @keyframes ollie-continuous {
   0%, 100% { transform: translateY(0)     rotate(0deg);    filter: brightness(1); }
-  5%       { transform: translateY(3px)   rotate(-1deg);   filter: brightness(0.92); }
-  12%      { transform: translateY(6px)   rotate(-2deg);   filter: brightness(0.85); }
-  20%      { transform: translateY(-8px)  rotate(-0.6deg); filter: brightness(1.1); }
-  30%      { transform: translateY(-32px) rotate(0.6deg);  filter: brightness(1.4); }
-  38%      { transform: translateY(-28px) rotate(1.4deg);  filter: brightness(1.35); }
-  48%      { transform: translateY(-16px) rotate(1deg);    filter: brightness(1.2); }
-  58%      { transform: translateY(2px)   rotate(-0.2deg); filter: brightness(0.95); }
-  66%      { transform: translateY(-1px)  rotate(0.1deg);  filter: brightness(1.04); }
+  5%       { transform: translateY(3px)   rotate(calc(-1deg * var(--jump-rot, 1)));   filter: brightness(0.92); }
+  12%      { transform: translateY(6px)   rotate(calc(-2deg * var(--jump-rot, 1)));   filter: brightness(0.85); }
+  20%      { transform: translateY(-8px)  rotate(calc(-0.6deg * var(--jump-rot, 1))); filter: brightness(1.1); }
+  30%      { transform: translateY(-32px) rotate(calc(0.6deg * var(--jump-rot, 1)));  filter: brightness(1.4); }
+  38%      { transform: translateY(-28px) rotate(calc(1.4deg * var(--jump-rot, 1)));  filter: brightness(1.35); }
+  48%      { transform: translateY(-16px) rotate(calc(1deg * var(--jump-rot, 1)));    filter: brightness(1.2); }
+  58%      { transform: translateY(2px)   rotate(calc(-0.2deg * var(--jump-rot, 1))); filter: brightness(0.95); }
+  66%      { transform: translateY(-1px)  rotate(calc(0.1deg * var(--jump-rot, 1)));  filter: brightness(1.04); }
   75%      { transform: translateY(0)     rotate(0deg);    filter: brightness(1); }
 }
 
